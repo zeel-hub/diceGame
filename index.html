@@ -1,0 +1,185 @@
+<!-- 
+    Assignment by: Zeel Patel, 000824838
+-->
+<html>
+    <head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+
+        <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+        <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        <style>
+            body {
+                background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+            }
+
+            #container2 {
+                margin-top: 20px;
+            }
+
+            input {
+                height: 40px;
+                width: 50px;
+            }
+
+            #dices {
+                height: 40px;
+                width: 50px;
+                margin: 10px;
+                text-align: right;
+                background-color: lightskyblue;
+                border: 3px solid black;
+            }
+
+            td {
+                /*border: 1px solid black;*/
+                padding: 10px;
+            }
+
+            tr {
+                border: 2px solid black;
+            }
+
+            #gap {
+                width: 100px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="container" class="container-fluid"></div>
+        <div id="container1" class="container-fluid"></div>
+        <div id="container2" class="container-fluid"></div>
+
+        <script type="text/babel">
+            ReactDOM.render(
+                <h1>Dice Game</h1>,
+                document.getElementById("container")
+            )
+
+            class Dice extends React.Component {
+                render() {
+                    return <div>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td colSpan="2">Dice</td> 
+                                <td rowSpan="3" id="gap"></td>
+                                <td colSpan="2">Side</td>   
+                            </tr>
+                            <tr>
+                                <td rowSpan="2"><input type="number" onChange={this.props.inputChanged.bind(this)} value={this.props.numOfDice}/></td>
+                                <td>
+                                    <button onClick={this.props.increaseNumOfDice.bind(this)}>&#8593;</button>
+                                </td>
+                                <td rowSpan="2"><input type="number" placeholder="6" min="2" onChange={this.props.inputChanged.bind(this)} value={this.props.numOfSide}/></td>
+                                <td>
+                                    <button onClick={this.props.increaseNumOfSide.bind(this)}>&#8593;</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><button  onClick={this.props.decreaseNumOfDice.bind(this)}>&#8595;</button></td>
+                                <td><button onClick={this.props.decreaseNumOfSide.bind(this)}>&#8595;</button></td>
+                            </tr>
+                        </tbody>
+                    </table>    
+                    <br />
+                    <button class="btn btn-success" onClick={this.props.submitFunc.bind(this)}>Roll</button>
+                    <br /><br />
+                    <div className="container-fluid">
+                        {this.props.toShow}
+                    </div>
+                    <div>
+                        <h2>TOTAL SCORE: {this.props.totalScore}</h2>
+                    </div>
+                    </div>
+                }
+            }
+
+            class DiceGame extends React.Component {
+                constructor(props) {
+                    super(props)
+                    this.state = {
+                        numOfDice: 1,
+                        numOfSide: 6,
+                        toShow: "",
+                        totalScore: 0
+                    }
+                }
+                increaseNumOfDice() {
+                    this.setState({
+                        numOfDice: this.state.numOfDice + 1
+                    })
+                }
+                decreaseNumOfDice() {
+                    if (this.state.numOfDice >= 2) {
+                        this.setState({
+                        numOfDice: this.state.numOfDice - 1
+                        })
+                    }
+                }
+                increaseNumOfSide() {
+                    this.setState({
+                        numOfSide: this.state.numOfSide + 1
+                    })
+                }
+                decreaseNumOfSide() {
+                    if (this.state.numOfSide >= 3) {
+                        this.setState({
+                        numOfSide: this.state.numOfSide - 1
+                        })
+                    }
+                }
+
+                submitFunc() {
+                    let table = []
+                    let random = 1
+                    let total = 0
+                    for (let i = 0; i < this.state.numOfDice; i++) {
+                        random = Math.floor((Math.random() * this.state.numOfSide) + 1)
+                        total = total + random
+                        table.push(<input id="dices" type="number" value={random} readOnly />)
+                    }
+                    this.setState({
+                        toShow: table,
+                        totalScore: total
+                        
+                    })
+                }
+
+                inputChanged(event) {
+                    this.setState({
+                    input: event.target.value
+                    })
+                }
+
+                render() {
+                    return (
+                        <Dice
+                            inputChanged={this.inputChanged.bind(this)}
+                            numOfDice={this.state.numOfDice}
+                            numOfSide={this.state.numOfSide}
+                            increaseNumOfDice={this.increaseNumOfDice.bind(this)}
+                            increaseNumOfSide={this.increaseNumOfSide.bind(this)}
+                            decreaseNumOfDice={this.decreaseNumOfDice.bind(this)}
+                            decreaseNumOfSide={this.decreaseNumOfSide.bind(this)}
+                            submitFunc={this.submitFunc.bind(this)}
+                            toShow={this.state.toShow}
+                            totalScore={this.state.totalScore}
+                        />
+                    )
+                }
+            }
+
+            ReactDOM.render(
+                    <DiceGame />,
+                document.getElementById("container1")
+            )
+        </script>
+        
+        
+
+    </body>
+</html>
